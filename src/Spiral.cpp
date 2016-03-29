@@ -34,7 +34,47 @@ Note : Check the function Parameters ,Its a double pointer .
 #include "stdafx.h"
 #include<stdlib.h>
 
+void getSpiral(int * result, int **arr, int rows, int columns, int left, int right, int top, int down, int dir, int index)
+{
+	if (left <= right && top <= down)
+	{
+		if (dir == 0)//go right
+		{
+			for (int i = left; i <= right; i++)
+				result[index++] = (int)arr[top][i];
+
+			getSpiral(result, arr, rows, columns, left, right, top + 1, down, 1, index);
+		}
+		else if (dir == 1)//go down
+		{
+			for (int i = top; i <= down; i++)
+				result[index++] = (int)arr[i][right];
+
+			getSpiral(result, arr, rows, columns, left, right - 1, top, down, 2, index);
+		}
+		else if (dir == 2)//go left
+		{
+			for (int i = right; i >= left; i--)
+				result[index++] = (int)arr[down][i];
+
+			getSpiral(result, arr, rows, columns, left, right, top, down - 1, 3, index);
+		}
+		else if (dir == 3)//go top
+		{
+			for (int i = down; i >= top; i--)
+				result[index++] = (int)arr[i][left];
+
+			getSpiral(result, arr, rows, columns, left + 1, right, top, down, 0, index);
+		}
+	}
+}
+
 int *spiral(int rows, int columns, int **input_array)
 {
-	return NULL;
+	if (rows <= 0 || columns <= 0 || !input_array)
+		return NULL;
+	int *result = (int *)malloc(sizeof(int) * rows * columns);
+	int top = 0, down = rows - 1, right = columns - 1, left = 0, dir = 0;
+	getSpiral(result, input_array, rows, columns, left, right, top, down, dir, 0);
+	return result;
 }

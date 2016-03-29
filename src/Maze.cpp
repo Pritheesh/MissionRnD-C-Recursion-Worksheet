@@ -35,8 +35,44 @@ more parameters .
 
 #include<stdlib.h>
 
+int canGo(int *maze, int rows, int columns, int x, int y)//To check if it is valid to go
+{
+	if (x >= 0 && y >= 0 && x < rows && y < columns && *(maze + x * columns + y))
+		return 1;
+	return 0;
+}
+
+int path(int *maze, int rows, int columns, int x1, int y1, int x2, int y2, int dir)//dir = 0 for up, 1 for down, 2 for right, 3 for left
+{
+	if (x1 == x2 && y1 == y2)
+		return 1;
+
+	if (canGo(maze, rows, columns, x1, y1))
+	{
+		//going down
+		if (dir != 0 && path(maze, rows, columns, x1 + 1, y1, x2, y2, 1))// can not go down if previously went up
+			return 1;
+
+		//going right
+		if (dir != 3 && path(maze, rows, columns, x1, y1 + 1, x2, y2, 2))//can't go right if previously went left
+			return 1;
+
+		//going up
+		if (dir != 1 && path(maze, rows, columns, x1 - 1, y1, x2, y2, 0))//can't go up if previously went down
+			return 1;
+
+		//going left
+		if (dir != 2 && path(maze, rows, columns, x1, y1 - 1, x2, y2, 3))//can't go left if previously went right
+			return 1;
+
+		return 0;
+	}
+	return 0;
+}
 
 int path_exists(int *maze, int rows, int columns, int x1, int y1, int x2, int y2)
 {
-	return 1;
+	if (rows <= 0 || columns <= 0 || x1 < 0 || y1 < 0 || x2 < 0 || y2 < 0 || *(maze + x1 * columns + y1) == 0 || *(maze + x2 * columns + y2) == 0)
+		return 0;
+	return path(maze, rows, columns, x1, y1, x2, y2, -1);
 }

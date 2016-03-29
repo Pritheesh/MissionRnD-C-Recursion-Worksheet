@@ -43,6 +43,44 @@ P.S: The Above Problem is just a modified version of a popular BackTracking prob
 */
 
 #include "stdafx.h"
-int solve_nsnipers(int *battlefield, int n){
+int x[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+int abs(int num)
+{
+	return (num >= 0) ? num : num / -1;
+}
+
+int canPlace(int k, int i)
+{
+	for (int j = 0; j < k; j++)
+	{
+		if ((x[j] == i) || (abs(x[j] - i) == abs(j - k)))
+			return 0;
+	}
+	return 1;
+}
+
+int NSnipers(int * battlefield, int k, int n)
+{
+	if (k >= n)
+		return 1;
+	for (int i = 0; i < n; i++)
+	{
+		if (canPlace(k, i))
+		{
+			x[k] = i;
+			if (NSnipers(battlefield, k + 1, n))
+				return 1;
+		}
+	}
 	return 0;
+}
+int solve_nsnipers(int *battlefield, int n)
+{
+	if (n <= 3)
+		return 0;
+	NSnipers(battlefield, 0, n);
+	for (int i = 0; i < n; i++)
+		battlefield[i * n + x[i]] = 1;
+	
+	return 1;
 }

@@ -22,9 +22,28 @@
 
 */
 #include "stdafx.h"
+#define size 25
+int steps[size];
 
+int step(int n)
+{
+	if (steps[n] != -1)
+		return steps[n];
+
+	steps[n] = step(n - 1) + step(n - 2);
+	return steps[n];
+}
 
 int get_steps(int s)
 {
-	return 0;
+	if (s < 0)
+		return -1;
+
+	for (int i = 3; i <= s; i++)
+		steps[i] = -1;
+	steps[0] = 0;
+	steps[1] = 1;
+	steps[2] = 2;
+
+	return step(s);
 }
